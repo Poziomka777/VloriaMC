@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ValoriaMC.pl</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root{
+    --accent: #ff66cc;
+    --panel-bg: rgba(22,22,22,0.72);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    height:100vh;
+    font-family: Poppins, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color:#fff;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#000;
+  }
+
+  /* FAŁSZYWA BELKA ADRESU */
+  .address-bar{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.45);
+    padding:8px 14px;
+    border-radius:12px;
+    font-size:14px;
+    color: #ddd;
+    z-index:40;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    backdrop-filter: blur(4px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);
+  }
+  .address-bar .dot{ width:9px;height:9px;border-radius:50%;background:#ff6b6b;display:inline-block; }
+
+  /* TŁO Z GWIAZDAMI I PIORUNAMI */
+  .starfield {
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:#000;
+    overflow:hidden;
+  }
+  canvas { display:block; }
+
+  .overlay{
+    position:relative;
+    z-index:10;
+    background: var(--panel-bg);
+    border-radius:18px;
+    padding:28px;
+    width:min(920px, 92vw);
+    max-width:1080px;
+    text-align:center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 40px rgba(170,50,150,0.06) inset;
+    backdrop-filter: blur(6px);
+    display:grid;
+    grid-template-columns: 140px 1fr;
+    gap:20px;
+    align-items:center;
+  }
+
+  /* LOGO */
+  .logo{
+    width:120px;height:120px;border-radius:14px;
+    background-image: url("https://i.imgur.com/W3ialld.png");
+    background-size:cover; background-position:center;
+    margin:auto;
+    border:2px solid rgba(255,255,255,0.06);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.6);
+  }
+
+  .content-left{ display:flex; flex-direction:column; gap:6px; align-items:center; }
+
+  h1{
+    margin:0;
+    font-size:40px;
+    color:var(--accent);
+    text-shadow: 0 0 18px rgba(255,102,204,0.18);
+    letter-spacing:1px;
+  }
+  p.subtitle{ margin:6px 0 0; color:#d7d7d7; font-size:14px; opacity:0.9; }
+
+  /* Ikony & linki */
+  .links{ display:flex; gap:16px; justify-content:center; margin-top:6px; }
+  .links a{ color:#fff; text-decoration:none; font-size:26px; padding:8px; border-radius:8px; transition:all .18s; }
+  .links a:hover{ transform:translateY(-4px); color:var(--accent); }
+
+  /* MOBILE */
+  @media (max-width:720px){
+    .overlay{ grid-template-columns: 1fr; padding:18px; gap:12px; }
+    h1{ font-size:28px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- FAŁSZYWA BELKA ADRESU -->
+  <div class="address-bar" title="adres witryny">
+    <span class="dot"></span>
+    <span class="dot" style="background:#ffa500"></span>
+    <span class="dot" style="background:#4cd137"></span>
+    <strong>valoriaMC-home.pl</strong>
+  </div>
+
+  <!-- TŁO Z GWIAZDAMI I PIORUNAMI -->
+  <div class="starfield">
+    <canvas id="starCanvas"></canvas>
+  </div>
+
+  <!-- GŁÓWNY PANEL -->
+  <div class="overlay" role="main">
+    <div class="content-left">
+      <div class="logo" aria-hidden="true"></div>
+    </div>
+
+    <div class="content-right" style="padding:6px 8px;">
+      <h1>ValoriaMC.pl</h1>
+      <p class="subtitle">Minecraft • Siła • Energia</p>
+
+      <div class="links" aria-hidden="false" style="margin-top:14px">
+        <a id="discord" href="https://discord.gg/z93JSamz" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a id="tiktok" href="#" target="_blank" title="TikTok (dodaj link)"><i class="fab fa-tiktok"></i></a>
+        <a id="youtube" href="#" target="_blank" title="YouTube (dodaj link)"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </div>
+
+<script>
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Tworzymy gwiazdy
+const numStars = 150;
+const stars = [];
+for(let i=0;i<numStars;i++){
+  stars.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    r: Math.random()*1.2+0.2,
+    brightness: Math.random(),
+    delta: Math.random()*0.02+0.005
+  });
+}
+
+// Pioruny
+let flashes = [];
+
+function createFlash() {
+  flashes.push({
+    x: Math.random()*w,
+    y: Math.random()*h/2,
+    alpha: 1,
+    decay: Math.random()*0.02+0.015
+  });
+}
+
+function draw() {
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,w,h);
+
+  // gwiazdy
+  for(let s of stars){
+    s.brightness += s.delta;
+    if(s.brightness>1){ s.brightness=1; s.delta*=-1; }
+    if(s.brightness<0){ s.brightness=0; s.delta*=-1; }
+    ctx.fillStyle = `rgba(255,255,255,${s.brightness})`;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // pioruny
+  if(Math.random()<0.01){ createFlash(); }
+
+  for(let i=flashes.length-1;i>=0;i--){
+    let f = flashes[i];
+    ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
+    ctx.beginPath();
+    ctx.arc(f.x,f.y,Math.random()*50+30,0,Math.PI*2);
+    ctx.fill();
+    f.alpha -= f.decay;
+    if(f.alpha <=0) flashes.splice(i,1);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>
