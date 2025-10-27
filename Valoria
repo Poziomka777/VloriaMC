@@ -132,8 +132,8 @@
 
       <div class="links" aria-hidden="false" style="margin-top:14px">
         <a id="discord" href="https://discord.gg/z93JSamz" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
-        <a id="tiktok" href="#" target="_blank" title="TikTok https://www.tiktok.com/@valoriamc.pl"><i class="fab fa-tiktok"></i></a>
-        <a id="youtube" href="#" target="_blank" title="YouTube https://www.youtube.com/@ValoriaMC-pl"><i class="fab fa-youtube"></i></a>
+        <a id="tiktok" href="#" target="_blank" title="https://www.tiktok.com/@valoriamc.pl"><i class="fab fa-tiktok"></i></a>
+        <a id="youtube" href="#" target="_blank" title="https://www.youtube.com/@ValoriaMC-pl"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
   </div>
